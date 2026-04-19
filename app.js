@@ -613,6 +613,9 @@ const birthDateInput = document.querySelector("#birth-date");
 const birthDatePicker = document.querySelector("#birth-date-picker");
 const birthDatePickerButton = document.querySelector("#birth-date-picker-button");
 const birthTimeInput = document.querySelector("#birth-time");
+const birthTimeHourSelect = document.querySelector("#birth-time-hour");
+const birthTimeMinuteSelect = document.querySelector("#birth-time-minute");
+const birthTimeMeridiemSelect = document.querySelector("#birth-time-meridiem");
 const castingProgress = document.querySelector("#casting-progress");
 const castingRouteButtons = [...document.querySelectorAll("[data-casting-mode]")];
 const quickCastingRoute = document.querySelector('#casting-route-quick');
@@ -651,6 +654,16 @@ function applyTranslations() {
   if (birthDatePicker) {
     birthDatePicker.setAttribute("aria-label", t("birthDate"));
   }
+  if (birthTimeHourSelect) {
+    birthTimeHourSelect.setAttribute("aria-label", state.language === "zh" ? "出生时间小时" : "Birth Time Hour");
+  }
+  if (birthTimeMinuteSelect) {
+    birthTimeMinuteSelect.setAttribute("aria-label", state.language === "zh" ? "出生时间分钟" : "Birth Time Minute");
+  }
+  if (birthTimeMeridiemSelect) {
+    birthTimeMeridiemSelect.setAttribute("aria-label", state.language === "zh" ? "出生时间上午下午" : "Birth Time AM or PM");
+  }
+  populateBirthTimeControls();
   langEnButton.classList.toggle("active", state.language === "en");
   langZhButton.classList.toggle("active", state.language === "zh");
   randomizeButton.textContent = randomizeButtonLabel();
@@ -704,6 +717,69 @@ function normalizeBirthDate(value) {
 
 function padDatePart(value) {
   return String(value).padStart(2, "0");
+}
+
+function normalizeBirthTime(value) {
+  const match = String(value || "").trim().match(/^(\d{1,2}):(\d{2})$/);
+  if (!match) return "12:00";
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return "12:00";
+  return `${padDatePart(hour)}:${padDatePart(minute)}`;
+}
+
+function decomposeBirthTime(value) {
+  const normalized = normalizeBirthTime(value);
+  const [hourRaw, minuteRaw] = normalized.split(":");
+  const hour24 = Number(hourRaw);
+  const minute = Number(minuteRaw);
+  return {
+    hour12: String(hour24 % 12 || 12),
+    minute: padDatePart(minute),
+    meridiem: hour24 >= 12 ? "pm" : "am",
+  };
+}
+
+function composeBirthTimeFromControls() {
+  const hour12 = Number(birthTimeHourSelect?.value || 12);
+  const minute = Number(birthTimeMinuteSelect?.value || 0);
+  const meridiem = birthTimeMeridiemSelect?.value === "pm" ? "pm" : "am";
+  const safeHour = hour12 >= 1 && hour12 <= 12 ? hour12 : 12;
+  const hour24 = meridiem === "pm" ? (safeHour % 12) + 12 : safeHour % 12;
+  return `${padDatePart(hour24)}:${padDatePart(minute)}`;
+}
+
+function syncBirthTimeValue() {
+  if (!birthTimeInput) return;
+  birthTimeInput.value = composeBirthTimeFromControls();
+}
+
+function populateBirthTimeControls() {
+  if (!birthTimeHourSelect || !birthTimeMinuteSelect || !birthTimeMeridiemSelect) return;
+  const current = decomposeBirthTime(birthTimeInput?.value || "12:00");
+  const meridiemLabels = state.language === "zh"
+    ? { am: "上午", pm: "下午" }
+    : { am: "AM", pm: "PM" };
+
+  birthTimeHourSelect.innerHTML = Array.from({ length: 12 }, (_, index) => {
+    const hour = String(index + 1);
+    return `<option value="${hour}">${padDatePart(hour)}</option>`;
+  }).join("");
+
+  birthTimeMinuteSelect.innerHTML = Array.from({ length: 60 }, (_, index) => {
+    const minute = padDatePart(index);
+    return `<option value="${minute}">${minute}</option>`;
+  }).join("");
+
+  birthTimeMeridiemSelect.innerHTML = `
+    <option value="am">${meridiemLabels.am}</option>
+    <option value="pm">${meridiemLabels.pm}</option>
+  `;
+
+  birthTimeHourSelect.value = current.hour12;
+  birthTimeMinuteSelect.value = current.minute;
+  birthTimeMeridiemSelect.value = current.meridiem;
+  syncBirthTimeValue();
 }
 
 function formatBirthDateDigits(rawValue) {
@@ -786,7 +862,8 @@ function syncEstimateSelection() {
 
 function applyEstimatedBirthTime(time) {
   if (!birthTimeInput || !time) return;
-  birthTimeInput.value = time;
+  birthTimeInput.value = normalizeBirthTime(time);
+  populateBirthTimeControls();
   clearStepError("step1");
   resetReadingView();
   syncEstimateSelection();
@@ -817,7 +894,7 @@ function restoreState() {
   try {
     const snapshot = JSON.parse(raw);
     setBirthDateDisplay(snapshot.birthDate || "");
-    document.querySelector("#birth-time").value = snapshot.birthTime || "12:00";
+    document.querySelector("#birth-time").value = normalizeBirthTime(snapshot.birthTime || "12:00");
     document.querySelector("#gender").value = snapshot.gender || "female";
     document.querySelector("#focus-area").value = snapshot.focusArea || "overall";
     state.coinLines = [null, null, null, null, null, null];
@@ -2156,6 +2233,13 @@ form.addEventListener("change", () => {
   updateHeroDate();
   updateHeroBlurb();
   persistState();
+});
+
+[birthTimeHourSelect, birthTimeMinuteSelect, birthTimeMeridiemSelect].forEach((control) => {
+  control?.addEventListener("change", () => {
+    syncBirthTimeValue();
+    clearStepError("step1");
+  });
 });
 
 estimateButtons.forEach((button) => {

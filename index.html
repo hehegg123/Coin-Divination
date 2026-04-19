@@ -69,7 +69,12 @@
 
             <label>
               <span data-i18n="birthTime">Birth Time</span>
-              <input type="time" id="birth-time" value="12:00" required />
+              <div class="time-input-grid">
+                <select id="birth-time-hour" aria-label="Birth Time Hour"></select>
+                <select id="birth-time-minute" aria-label="Birth Time Minute"></select>
+                <select id="birth-time-meridiem" aria-label="Birth Time AM or PM"></select>
+              </div>
+              <input type="hidden" id="birth-time" value="12:00" required />
             </label>
 
             <label>
