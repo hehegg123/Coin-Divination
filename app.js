@@ -648,6 +648,9 @@ function applyTranslations() {
     birthDatePickerButton.setAttribute("aria-label", t("openCalendar"));
     birthDatePickerButton.setAttribute("title", t("openCalendar"));
   }
+  if (birthDatePicker) {
+    birthDatePicker.setAttribute("aria-label", t("birthDate"));
+  }
   langEnButton.classList.toggle("active", state.language === "en");
   langZhButton.classList.toggle("active", state.language === "zh");
   randomizeButton.textContent = randomizeButtonLabel();
@@ -701,6 +704,13 @@ function normalizeBirthDate(value) {
 
 function padDatePart(value) {
   return String(value).padStart(2, "0");
+}
+
+function formatBirthDateDigits(rawValue) {
+  const digits = String(rawValue || "").replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
 
 function isoToUsDate(isoDate) {
@@ -2160,6 +2170,17 @@ birthDatePicker?.addEventListener("change", () => {
   setBirthDateDisplay(birthDatePicker.value);
   resetReadingView();
   persistState();
+});
+
+birthDateInput?.addEventListener("input", () => {
+  const formatted = formatBirthDateDigits(birthDateInput.value);
+  if (birthDateInput.value !== formatted) {
+    birthDateInput.value = formatted;
+  }
+  const iso = parseBirthDateInput(formatted);
+  if (birthDatePicker) {
+    birthDatePicker.value = iso || "";
+  }
 });
 
 birthDateInput?.addEventListener("blur", () => {

@@ -159,8 +159,13 @@ input, select {
   background: var(--surface-strong);
   color: var(--text);
 }
+.fortune-form input,
+.fortune-form select {
+  min-width: 0;
+}
 .date-input-wrap {
   position: relative;
+  width: 100%;
 }
 .date-input-wrap input[type="text"] {
   padding-right: 56px;
@@ -185,13 +190,18 @@ input, select {
 }
 .native-date-picker {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  top: 50%;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  transform: translateY(-50%);
   padding: 0;
   margin: 0;
   border: 0;
   opacity: 0;
-  pointer-events: none;
+  z-index: 2;
+  cursor: pointer;
+  pointer-events: auto;
 }
 select {
   appearance: none;
@@ -445,8 +455,8 @@ select {
 }
 
 .coin-disc {
-  width: 76px;
-  height: 76px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -493,8 +503,8 @@ select {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  filter: saturate(1.04) contrast(1.02);
-  transform: scale(1.26);
+  filter: saturate(1.02) contrast(1.01);
+  transform: scale(1.08);
   transform-origin: center;
 }
 
@@ -942,6 +952,11 @@ select {
     height: 38px;
   }
 
+  .native-date-picker {
+    width: 38px;
+    height: 38px;
+  }
+
   .text-button,
   .ghost-button,
   .primary-button,
@@ -955,6 +970,12 @@ select {
   .primary-button {
     width: 100%;
     justify-content: center;
+  }
+
+  #birth-time {
+    display: block;
+    width: 100%;
+    min-inline-size: 0;
   }
 
   .casting-actions {
@@ -986,8 +1007,8 @@ select {
   }
 
   .coin-disc {
-    width: 66px;
-    height: 66px;
+    width: 70px;
+    height: 70px;
   }
 
   .line-options {
