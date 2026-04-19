@@ -2,3 +2,10 @@
 .edge-temp2
 .edge-temp3
 test-agent-report.json
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
