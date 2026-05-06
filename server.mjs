@@ -33,5 +33,5 @@ const server = createServer(async (request, response) => {
 
 const port = 4173;
 server.listen(port, () => {
-  console.log(`Coin Divination app running at http://localhost:${port}`);
+  console.log(`Hexagram Divination app running at http://localhost:${port}`);
 });

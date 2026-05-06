@@ -3,275 +3,328 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coin Divination</title>
+    <title>Hexagram Divination</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="page-shell">
       <header class="hero">
         <div class="hero-copy">
-          <p class="eyebrow" data-i18n="heroEyebrow">Birth Time x Coin Casting</p>
+          <p class="eyebrow" id="hero-eyebrow"></p>
           <div class="language-toggle" role="group" aria-label="Language switch">
             <button type="button" class="lang-button active" id="lang-en">EN</button>
             <button type="button" class="lang-button" id="lang-zh">ZH</button>
           </div>
-          <h1 data-i18n="heroTitle">Coin Divination</h1>
-          <p class="hero-text">
-            <span data-i18n="heroText">A reading for today, drawn from birth time and coin.</span>
-          </p>
-        </div>
-        <div class="hero-card">
-          <p class="hero-label" data-i18n="heroLabel">Today's Theme</p>
-          <p class="hero-date" id="hero-date"></p>
-          <div class="hero-blurb" id="hero-blurb">
-            Waiting for your first coin line.
+          <h1 id="hero-title"></h1>
+          <p class="hero-text" id="hero-text"></p>
+          <div class="experience-switch" role="tablist" aria-label="Reading mode">
+            <button type="button" class="view-toggle active" id="view-coin" data-view="coin" aria-pressed="true"></button>
+            <button type="button" class="view-toggle" id="view-bazi" data-view="bazi" aria-pressed="false"></button>
           </div>
+        </div>
+
+        <div class="hero-card">
+          <p class="hero-label" data-i18n="heroLabel">Today's Almanac</p>
+          <p class="hero-date" id="hero-date"></p>
+          <div class="hero-blurb" id="hero-blurb"></div>
         </div>
       </header>
 
       <main class="layout">
-        <section class="panel panel-intro">
-          <div class="panel-title-row">
-            <div>
-              <p class="section-kicker" data-i18n="introKicker">Before You Start</p>
-              <h2 data-i18n="introTitle">What You'll Get</h2>
-            </div>
-          </div>
-
-          <div class="intro-copy">
-            <p data-i18n="introText1">Enter your birth details, pick one topic, and get a reading for today.</p>
-            <p data-i18n="introText2">You will see the short answer first, then the deeper Bazi and hexagram reasoning only if you want it.</p>
-          </div>
-
-          <div class="intro-copy intro-note">
-            <p data-i18n="introEstimateLead">If you do not know the exact birth time, use the closest approximate time you remember for now.</p>
-            <p data-i18n="introEstimateRule">A more accurate birth time usually gives a more accurate reading, especially for the hour pillar, luck cycles, and timing-related details.</p>
-          </div>
-        </section>
-
-        <section class="panel panel-form">
-          <div class="panel-title-row">
-            <div>
-              <p class="section-kicker" data-i18n="step1Kicker">Step 1</p>
-              <h2 data-i18n="step1Title">Enter Birth Details</h2>
-            </div>
-          </div>
-
-          <form id="fortune-form" class="fortune-form">
-            <label>
-              <span data-i18n="birthDate">Birth Date</span>
-              <div class="date-input-wrap">
-                <input type="text" id="birth-date" inputmode="numeric" maxlength="10" placeholder="MM/DD/YYYY" autocomplete="bday" required />
-                <button type="button" class="date-picker-button" id="birth-date-picker-button" aria-hidden="true" tabindex="-1">&#128197;</button>
-                <input type="date" id="birth-date-picker" class="native-date-picker" aria-label="Birth Date" />
-              </div>
-            </label>
-
-            <label>
-              <span data-i18n="birthTime">Birth Time</span>
-              <div class="time-input-grid">
-                <select id="birth-time-hour" aria-label="Birth Time Hour"></select>
-                <select id="birth-time-minute" aria-label="Birth Time Minute"></select>
-                <select id="birth-time-meridiem" aria-label="Birth Time AM or PM"></select>
-              </div>
-              <input type="hidden" id="birth-time" value="12:00" required />
-            </label>
-
-            <label>
-              <span data-i18n="gender">Gender</span>
-              <select id="gender">
-                <option value="female" data-i18n="female">Female</option>
-                <option value="male" data-i18n="male">Male</option>
-                <option value="other" data-i18n="other">Other / Prefer not to say</option>
-              </select>
-            </label>
-
-            <label>
-              <span data-i18n="focusArea">What do you want to focus on today?</span>
-              <select id="focus-area">
-                <option value="overall" data-i18n="overall">Overall</option>
-                <option value="career" data-i18n="career">Career</option>
-                <option value="wealth" data-i18n="wealth">Wealth</option>
-                <option value="love" data-i18n="love">Love</option>
-                <option value="health" data-i18n="health">Health</option>
-              </select>
-            </label>
-          </form>
-          <p id="step1-error" class="step-error hidden" aria-live="polite"></p>
-        </section>
-
-        <section class="panel panel-casting">
-          <div class="panel-title-row">
-            <div>
-              <p class="section-kicker" data-i18n="step2Kicker">Step 2</p>
-              <h2 data-i18n="step2Title">Cast Six Coin Lines</h2>
-            </div>
-          </div>
-
-          <div class="casting-mode-switch" role="tablist" aria-label="Choose casting mode">
-            <button type="button" class="mode-toggle active" id="casting-mode-quick" data-casting-mode="quick" aria-pressed="true">
-              <span data-i18n="step2QuickTab">Quick Reading</span>
-            </button>
-            <button type="button" class="mode-toggle" id="casting-mode-traditional" data-casting-mode="traditional" aria-pressed="false">
-              <span data-i18n="step2TraditionalTab">Traditional Coin Casting</span>
-            </button>
-          </div>
-
-          <div class="casting-route" id="casting-route-quick" data-casting-route="quick">
-            <div class="quick-route-card">
-              <p class="quick-route-kicker" data-i18n="quickCastTitle">We can perform the ritual for you.</p>
-              <p class="quick-route-copy">
-                <span data-i18n="quickCastTextLead">We can perform the ritual for you, so you can get a quick reading. But we do recommend</span>
-                <button type="button" class="inline-link-button" id="switch-to-traditional" data-i18n="step2TraditionalTab">Traditional Coin Casting</button>
-                <span data-i18n="quickCastTextTail">if you'd like to perform the cast yourself for a more accurate reading.</span>
-              </p>
-              <div class="casting-actions casting-actions-quick">
-                <button type="button" class="primary-button" id="randomize-all" data-i18n="quickCastAction">Automatic Casting</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="casting-route" id="casting-route-traditional" data-casting-route="traditional" hidden>
-            <div class="coin-guide">
-              <p data-i18n="coinGuideIntro">Best with real coins: toss three coins for each line and record the heads and tails below.</p>
-              <p data-i18n="coinGuideSteps">Toss your coins 6 times, record each toss in the six lines below in order, then generate today's reading.</p>
-            </div>
-            <div class="casting-progress" id="casting-progress" aria-live="polite"></div>
-            <div id="coin-lines" class="coin-lines"></div>
-          </div>
-
-          <div class="coin-stage" id="coin-stage" aria-hidden="true">
-            <div class="coin-stage-coins">
-              <div class="coin-disc" data-coin-index="0" data-face="yang">
-                <span class="coin-face coin-face-front">
-                  <img src="./assets/coin-front-resized.png" alt="" class="coin-face-image" />
-                </span>
-                <span class="coin-face coin-face-back">
-                  <img src="./assets/coin-back-resized.png" alt="" class="coin-face-image" />
-                </span>
-              </div>
-              <div class="coin-disc" data-coin-index="1" data-face="yang">
-                <span class="coin-face coin-face-front">
-                  <img src="./assets/coin-front-resized.png" alt="" class="coin-face-image" />
-                </span>
-                <span class="coin-face coin-face-back">
-                  <img src="./assets/coin-back-resized.png" alt="" class="coin-face-image" />
-                </span>
-              </div>
-              <div class="coin-disc" data-coin-index="2" data-face="yang">
-                <span class="coin-face coin-face-front">
-                  <img src="./assets/coin-front-resized.png" alt="" class="coin-face-image" />
-                </span>
-                <span class="coin-face coin-face-back">
-                  <img src="./assets/coin-back-resized.png" alt="" class="coin-face-image" />
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="casting-actions casting-actions-footer">
-            <button type="button" class="ghost-button" id="clear-casting" data-i18n="clearCast">Clear Casting</button>
-            <button type="button" class="primary-button" id="analyze-button" data-i18n="generate">Generate Today's Reading</button>
-          </div>
-          <p id="step2-error" class="step-error hidden" aria-live="polite"></p>
-        </section>
-
-        <section class="panel panel-results">
-          <div class="panel-title-row">
-            <div>
-              <p class="section-kicker" data-i18n="step3Kicker">Step 3</p>
-              <h2 data-i18n="step3Title">Your Reading</h2>
-            </div>
-          </div>
-
-          <div id="empty-state" class="empty-state">
-            <span data-i18n="emptyState">After you enter your birth details and complete the six-line casting, your reading will appear here.</span>
-          </div>
-
-          <div id="results" class="results hidden">
-            <div class="score-card">
+        <section id="coin-view" class="experience-view">
+          <section class="panel panel-intro">
+            <div class="panel-title-row">
               <div>
-                <p class="score-label" data-i18n="scoreLabel">Today's Overall Reading</p>
-                <h3 id="score-value">0</h3>
+                <h2 data-i18n="coinIntroTitle">What Is Six-Line Casting?</h2>
               </div>
-              <p id="score-tier" class="score-tier"></p>
+            </div>
+            <div class="intro-copy">
+              <p data-i18n="coinIntroText1">Six-line casting is a traditional way of asking one clear question by using three coins to cast six lines. Each toss becomes one yin or yang line, and the six lines are stacked from bottom to top to form the primary hexagram.</p>
+              <p data-i18n="coinIntroText2">If a cast produces an old yin or old yang line, that line is treated as moving. In practice, the reading usually starts with the primary hexagram for the present situation, then the moving lines for the key turning points, and finally the changed hexagram for where the matter may be heading.</p>
+              <p data-i18n="coinIntroText3">Its roots go back to the divination tradition of the Yijing, where six-line hexagrams were used to model change. The later six-line method commonly used today developed by combining the hexagram with a more detailed way of reading shifts and relationships inside the cast. Traditionally, people believe it can answer a question because the moment of asking, the cast itself, and the changing yin-yang pattern are treated as corresponding to the situation you are asking about. <a href="https://en.wikipedia.org/wiki/I_Ching_divination" target="_blank" rel="noreferrer">Learn more here.</a></p>
+            </div>
+          </section>
+
+          <section class="panel panel-form">
+            <div class="panel-title-row">
+              <div>
+                <p class="section-kicker" data-i18n="coinStep1Kicker">Step 1</p>
+                <h2 data-i18n="coinStep1Title">Frame One Clear Question</h2>
+              </div>
+            </div>
+            <form id="coin-form" class="simple-form">
+              <p class="field-help" data-i18n="coinIntentNote">Before you cast, settle your mind and hold one specific matter only. One hexagram should answer one question, not several at the same time. Then choose the question type below by the useful line you would usually take in six-line reading.</p>
+              <label>
+                <span data-i18n="coinFocusLabel">By six-line useful-line method, which question type fits best?</span>
+                <select id="coin-focus-area">
+                  <option value="self" data-i18n="coinFocusSelf">Personal situation / general outlook</option>
+                  <option value="wealth" data-i18n="coinFocusWealth">Money, trade, or male love inquiry</option>
+                  <option value="authority" data-i18n="coinFocusAuthority">Career, position, or female love inquiry</option>
+                  <option value="parent" data-i18n="coinFocusParent">Documents, exams, housing, or parents</option>
+                  <option value="child" data-i18n="coinFocusChild">Children, pregnancy, healing, or relief</option>
+                  <option value="sibling" data-i18n="coinFocusSibling">Friends, partnership, or competition</option>
+                </select>
+              </label>
+            </form>
+          </section>
+
+          <section class="panel panel-casting">
+            <div class="panel-title-row">
+              <div>
+                <p class="section-kicker" data-i18n="coinStep2Kicker">Step 2</p>
+                <h2 data-i18n="coinStep2Title">Cast A Six-Line Hexagram</h2>
+              </div>
+            </div>
+            <div class="casting-mode-switch" role="tablist" aria-label="Choose casting mode">
+              <button type="button" class="mode-toggle active" id="coin-casting-mode-quick" data-casting-mode="quick" aria-pressed="true">
+                <span data-i18n="coinQuickTab">Quick Reading</span>
+              </button>
+              <button type="button" class="mode-toggle" id="coin-casting-mode-traditional" data-casting-mode="traditional" aria-pressed="false">
+                <span data-i18n="coinTraditionalTab">Traditional Coin Casting</span>
+              </button>
             </div>
 
-            <section class="result-section">
-              <div class="result-section-head">
-                <p class="section-kicker" data-i18n="blendedGroupKicker">Blended Reading</p>
-                <h3 class="section-group-title" data-i18n="blendedGroupTitle">Combined Reading</h3>
-                <p class="section-note" data-i18n="blendedGroupNote">These cards combine the chart background with the current hexagram to answer today's question.</p>
+            <div class="casting-route" id="coin-casting-route-quick">
+              <div class="quick-route-card">
+                <p class="quick-route-kicker" data-i18n="coinQuickTitle">We can perform the ritual for you.</p>
+                <p class="quick-route-copy">
+                  <span data-i18n="coinQuickTextLead">We can perform the ritual for you, so you can get a quick reading. But we do recommend</span>
+                  <button type="button" class="inline-link-button" id="coin-switch-to-traditional" data-i18n="coinTraditionalTab">Traditional Coin Casting</button>
+                  <span data-i18n="coinQuickTextTail">if you'd like to perform the cast yourself for a more accurate reading.</span>
+                </p>
+                <div class="casting-actions casting-actions-quick">
+                  <button type="button" class="primary-button" id="coin-randomize-all" data-i18n="coinQuickAction">Automatic Casting</button>
+                </div>
               </div>
+            </div>
 
-              <div class="result-grid">
-                <article class="result-card">
-                  <h3 data-i18n="summaryTitle">Main Reading</h3>
-                  <div id="summary-text"></div>
-                </article>
-                <article class="result-card">
-                  <h3 data-i18n="adviceTitle">Suggested Action</h3>
-                  <div id="advice-text"></div>
-                </article>
+            <div class="casting-route" id="coin-casting-route-traditional" hidden>
+              <div class="coin-guide">
+                <p data-i18n="coinGuideIntro">Best with real coins: toss three coins for each line and record the heads and tails below.</p>
+                <p data-i18n="coinGuideSteps">Toss your coins 6 times, record each toss in the six lines below in order, then generate your reading.</p>
               </div>
+              <div class="casting-progress" id="coin-casting-progress" aria-live="polite"></div>
+              <div id="coin-lines" class="coin-lines"></div>
+            </div>
 
+            <div class="coin-stage" id="coin-stage" aria-hidden="true">
+              <div class="coin-stage-coins">
+                <div class="coin-disc" data-coin-index="0" data-face="yang">
+                  <span class="coin-face coin-face-front"><img src="./assets/coin-front-resized.png" alt="" class="coin-face-image" /></span>
+                  <span class="coin-face coin-face-back"><img src="./assets/coin-back-resized.png" alt="" class="coin-face-image" /></span>
+                </div>
+                <div class="coin-disc" data-coin-index="1" data-face="yang">
+                  <span class="coin-face coin-face-front"><img src="./assets/coin-front-resized.png" alt="" class="coin-face-image" /></span>
+                  <span class="coin-face coin-face-back"><img src="./assets/coin-back-resized.png" alt="" class="coin-face-image" /></span>
+                </div>
+                <div class="coin-disc" data-coin-index="2" data-face="yang">
+                  <span class="coin-face coin-face-front"><img src="./assets/coin-front-resized.png" alt="" class="coin-face-image" /></span>
+                  <span class="coin-face coin-face-back"><img src="./assets/coin-back-resized.png" alt="" class="coin-face-image" /></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="casting-actions casting-actions-footer">
+              <button type="button" class="ghost-button" id="coin-clear-casting" data-i18n="clearCast">Clear Casting</button>
+              <button type="button" class="primary-button" id="coin-analyze-button" data-i18n="coinGenerate">Generate Hexagram Reading</button>
+            </div>
+            <p id="coin-step2-error" class="step-error hidden" aria-live="polite"></p>
+          </section>
+
+          <section class="panel panel-results">
+            <div class="panel-title-row">
+              <div>
+                <p class="section-kicker" data-i18n="coinStep3Kicker">Step 3</p>
+                <h2 data-i18n="coinStep3Title">Hexagram Reading</h2>
+              </div>
+            </div>
+            <div id="coin-empty-state" class="empty-state">
+              <span data-i18n="coinEmptyState">After you complete the six-line cast, your hexagram reading will appear here.</span>
+            </div>
+            <div id="coin-results" class="results hidden">
+              <div class="score-card">
+                <div>
+                  <p class="score-label" data-i18n="coinScoreLabel">Hexagram Tone</p>
+                  <h3 id="coin-score-value">0</h3>
+                </div>
+                <p id="coin-score-tier" class="score-tier"></p>
+              </div>
               <div class="result-grid">
                 <article class="result-card full-span-card">
-                  <h3 data-i18n="meaningTitle">What This Means</h3>
-                  <div id="meaning-card" class="hexagram-card"></div>
+                  <h3 data-i18n="coinSelfTitle">Read The Self Line First</h3>
+                  <div id="coin-self-card" class="hexagram-card"></div>
                 </article>
               </div>
-            </section>
-
-            <details class="advanced-reading" id="advanced-reading">
-              <summary class="advanced-reading-summary">
-                <span class="advanced-reading-title" data-i18n="advancedToggle">See the full chart breakdown</span>
-                <span class="advanced-reading-hint" data-i18n="advancedToggleHint">Hexagram detail, chart structure, and longer-cycle context</span>
-              </summary>
-
-              <div class="advanced-reading-body">
-                <div class="metrics" id="metrics"></div>
-
-                <section class="result-section">
-                  <div class="result-section-head">
-                    <p class="section-kicker" data-i18n="hexagramGroupKicker">From the Hexagram</p>
-                    <h3 class="section-group-title" data-i18n="hexagramGroupTitle">Hexagram-Based Reading</h3>
-                    <p class="section-note" data-i18n="hexagramGroupNote">These cards come from the coin casting itself: image, moving lines, and change.</p>
-                  </div>
-
-                  <div class="result-grid">
-                    <article class="result-card full-span-card">
-                      <h3 data-i18n="hexagramTitle">Hexagram Insight</h3>
-                      <div id="hexagram-card" class="hexagram-card"></div>
-                    </article>
-                  </div>
-                </section>
-
-                <section class="result-section">
-                  <div class="result-section-head">
-                    <p class="section-kicker" data-i18n="baziGroupKicker">From the Birth Chart</p>
-                    <h3 class="section-group-title" data-i18n="baziGroupTitle">Bazi-Based Reading</h3>
-                    <p class="section-note" data-i18n="baziGroupNote">These cards come from the natal chart, season, and luck-cycle background.</p>
-                  </div>
-
-                  <div class="result-grid">
-                    <article class="result-card">
-                      <h3 data-i18n="structureTitle">Chart Structure</h3>
-                      <div id="structure-card" class="hexagram-card"></div>
-                    </article>
-                    <article class="result-card full-span-card">
-                      <h3 data-i18n="luckTitle">Luck Cycles</h3>
-                      <div id="luck-card" class="hexagram-card"></div>
-                    </article>
-                  </div>
-                </section>
+              <div class="result-grid">
+                <article class="result-card full-span-card">
+                  <h3 data-i18n="coinUsefulTitle">Then Read The Useful Line And Response</h3>
+                  <div id="coin-useful-card" class="hexagram-card"></div>
+                </article>
               </div>
-            </details>
-          </div>
+              <div class="result-grid">
+                <article class="result-card">
+                  <h3 data-i18n="coinSummaryTitle">Reading For Your Question</h3>
+                  <div id="coin-summary-text"></div>
+                </article>
+                <article class="result-card">
+                  <h3 data-i18n="coinFocusTitle">Practical Advice</h3>
+                  <div id="coin-focus-text"></div>
+                </article>
+              </div>
+              <div class="result-grid">
+                <article class="result-card">
+                  <h3 data-i18n="coinHexagramTitle">Current Situation</h3>
+                  <div id="coin-hexagram-card" class="hexagram-card"></div>
+                </article>
+                <article class="result-card">
+                  <h3 data-i18n="coinChangeTitle">Direction Of Change</h3>
+                  <div id="coin-change-card"></div>
+                </article>
+              </div>
+              <div class="result-grid">
+                <article class="result-card full-span-card">
+                  <h3 data-i18n="coinLinesTitle">Moving Lines To Watch</h3>
+                  <div id="coin-lines-card" class="hexagram-card"></div>
+                </article>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section id="bazi-view" class="experience-view hidden">
+          <section class="panel panel-intro">
+            <div class="panel-title-row">
+              <div>
+                <p class="section-kicker" data-i18n="baziIntroKicker">Bazi Path</p>
+                <h2 data-i18n="baziIntroTitle">Read the Day Through Your Birth Chart</h2>
+              </div>
+            </div>
+            <div class="intro-copy">
+              <p data-i18n="baziIntroText1">This page reads only the birth chart and the current timing background. It does not use a hexagram cast.</p>
+              <p data-i18n="baziIntroText2">Use it when you want the chart structure, climate, and luck-cycle context behind today's energy.</p>
+            </div>
+            <div class="intro-copy intro-note">
+              <p data-i18n="baziIntroEstimateLead">If you do not know the exact birth time, use the closest approximate time you remember for now.</p>
+              <p data-i18n="baziIntroEstimateRule">A more accurate birth time usually gives a more accurate reading, especially for the hour pillar, luck cycles, and timing-related details.</p>
+            </div>
+          </section>
+
+          <section class="panel panel-form">
+            <div class="panel-title-row">
+              <div>
+                <p class="section-kicker" data-i18n="baziStep1Kicker">Step 1</p>
+                <h2 data-i18n="baziStep1Title">Enter Birth Details</h2>
+              </div>
+            </div>
+            <form id="bazi-form" class="fortune-form">
+              <label>
+                <span data-i18n="birthDate">Birth Date</span>
+                <div class="date-input-wrap">
+                  <input type="text" id="bazi-birth-date" inputmode="numeric" maxlength="10" placeholder="MM/DD/YYYY" autocomplete="bday" required />
+                  <button type="button" class="date-picker-button" id="bazi-birth-date-picker-button" aria-hidden="true" tabindex="-1">&#128197;</button>
+                  <input type="date" id="bazi-birth-date-picker" class="native-date-picker" aria-label="Birth Date" />
+                </div>
+              </label>
+
+              <label>
+                <span data-i18n="birthTime">Birth Time</span>
+                <div class="time-input-grid">
+                  <select id="bazi-birth-time-hour" aria-label="Birth Time Hour"></select>
+                  <select id="bazi-birth-time-minute" aria-label="Birth Time Minute"></select>
+                  <select id="bazi-birth-time-meridiem" aria-label="Birth Time AM or PM"></select>
+                </div>
+                <input type="hidden" id="bazi-birth-time" value="12:00" required />
+              </label>
+
+              <label>
+                <span data-i18n="gender">Gender</span>
+                <select id="bazi-gender">
+                  <option value="female" data-i18n="female">Female</option>
+                  <option value="male" data-i18n="male">Male</option>
+                  <option value="other" data-i18n="other">Other / Prefer not to say</option>
+                </select>
+              </label>
+
+              <label>
+                <span data-i18n="baziFocusLabel">What do you want the chart to focus on today?</span>
+                <select id="bazi-focus-area">
+                  <option value="overall" data-i18n="overall">Overall</option>
+                  <option value="career" data-i18n="career">Career</option>
+                  <option value="wealth" data-i18n="wealth">Wealth</option>
+                  <option value="love" data-i18n="love">Love</option>
+                  <option value="health" data-i18n="health">Health</option>
+                </select>
+              </label>
+            </form>
+            <p id="bazi-step1-error" class="step-error hidden" aria-live="polite"></p>
+          </section>
+
+          <section class="panel panel-action">
+            <div class="panel-title-row">
+              <div>
+                <p class="section-kicker" data-i18n="baziStep2Kicker">Step 2</p>
+                <h2 data-i18n="baziStep2Title">Generate Bazi Reading</h2>
+              </div>
+            </div>
+            <p class="action-copy" data-i18n="baziActionCopy">We will read today's timing through your natal chart, seasonal climate, and current luck-cycle background.</p>
+            <div class="casting-actions casting-actions-footer">
+              <button type="button" class="primary-button" id="bazi-analyze-button" data-i18n="baziGenerate">Generate Bazi Reading</button>
+            </div>
+          </section>
+
+          <section class="panel panel-results">
+            <div class="panel-title-row">
+              <div>
+                <p class="section-kicker" data-i18n="baziStep3Kicker">Step 3</p>
+                <h2 data-i18n="baziStep3Title">Bazi Reading</h2>
+              </div>
+            </div>
+            <div id="bazi-empty-state" class="empty-state">
+              <span data-i18n="baziEmptyState">After you enter your birth details, your chart-based reading will appear here.</span>
+            </div>
+            <div id="bazi-results" class="results hidden">
+              <div class="score-card">
+                <div>
+                  <p class="score-label" data-i18n="baziScoreLabel">Chart Tone Today</p>
+                  <h3 id="bazi-score-value">0</h3>
+                </div>
+                <p id="bazi-score-tier" class="score-tier"></p>
+              </div>
+              <div class="result-grid">
+                <article class="result-card">
+                  <h3 data-i18n="baziSummaryTitle">Main Reading</h3>
+                  <div id="bazi-summary-text"></div>
+                </article>
+                <article class="result-card">
+                  <h3 data-i18n="baziFocusTitle">Focus Guidance</h3>
+                  <div id="bazi-focus-text"></div>
+                </article>
+              </div>
+              <div class="result-grid">
+                <article class="result-card">
+                  <h3 data-i18n="baziClimateTitle">Chart Climate</h3>
+                  <div id="bazi-climate-card"></div>
+                </article>
+                <article class="result-card">
+                  <h3 data-i18n="baziMeaningTitle">What This Means</h3>
+                  <div id="bazi-meaning-card"></div>
+                </article>
+              </div>
+              <div class="result-grid">
+                <article class="result-card">
+                  <h3 data-i18n="baziStructureTitle">Chart Structure</h3>
+                  <div id="bazi-structure-card" class="hexagram-card"></div>
+                </article>
+                <article class="result-card">
+                  <h3 data-i18n="baziLuckTitle">Luck Cycles</h3>
+                  <div id="bazi-luck-card" class="hexagram-card"></div>
+                </article>
+              </div>
+            </div>
+          </section>
         </section>
       </main>
     </div>
-
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./split-app.js"></script>
   </body>
 </html>

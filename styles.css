@@ -67,7 +67,12 @@ summary:focus-visible {
 }
 
 .hero-copy h1, .panel h2 { margin: 0; line-height: 1.08; }
-.hero-copy h1 { font-size: clamp(1.7rem, 3vw, 3.1rem); max-width: 16ch; }
+.hero-copy h1 {
+  font-size: clamp(1.55rem, 2.55vw, 2.7rem);
+  max-width: none;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
 .hero-text { margin: 18px 0 0; max-width: 56ch; color: var(--muted); line-height: 1.8; }
 
 .hero-card {
@@ -137,6 +142,69 @@ summary:focus-visible {
   color: #fffaf2;
 }
 
+.experience-switch {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 6px;
+  border-radius: 18px;
+  background: rgba(75, 50, 35, 0.06);
+}
+
+.view-toggle {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.view-toggle.active {
+  background: rgba(120, 71, 38, 0.12);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px rgba(120, 71, 38, 0.16);
+}
+
+.view-toggle:hover,
+.view-toggle:focus-visible {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.experience-view {
+  display: grid;
+  gap: 24px;
+}
+
+.simple-form {
+  display: grid;
+  gap: 16px;
+}
+
+.intro-copy {
+  display: grid;
+  gap: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.intro-copy p {
+  margin: 0;
+}
+
+.intro-note {
+  margin-top: 16px;
+}
+
+.panel-action .action-copy {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 .fortune-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -155,7 +223,7 @@ label span { color: var(--muted); font-size: 0.95rem; }
   font-size: 0.88rem;
   line-height: 1.5;
 }
-input, select {
+input, select, textarea {
   width: 100%;
   justify-self: stretch;
   padding: 14px 16px;
@@ -164,8 +232,15 @@ input, select {
   background: var(--surface-strong);
   color: var(--text);
 }
+textarea {
+  min-height: 112px;
+  resize: vertical;
+  font: inherit;
+  line-height: 1.6;
+}
 .fortune-form input,
-.fortune-form select {
+.fortune-form select,
+.fortune-form textarea {
   min-width: 0;
 }
 
@@ -467,12 +542,12 @@ select {
 
 .coin-stage {
   margin-bottom: 18px;
-  padding: 18px;
+  padding: 12px 10px 8px;
   border-radius: 22px;
-  border: 1px solid rgba(75, 50, 35, 0.1);
+  border: none;
   background:
-    radial-gradient(circle at 50% 0%, rgba(165, 107, 31, 0.12), transparent 48%),
-    rgba(255, 255, 255, 0.42);
+    radial-gradient(ellipse at 50% 68%, rgba(98, 67, 40, 0.08), transparent 58%),
+    linear-gradient(180deg, rgba(255, 252, 246, 0.24), rgba(255, 252, 246, 0.04));
   opacity: 1;
   transform: translateY(0);
   pointer-events: none;
@@ -487,15 +562,15 @@ select {
 .coin-stage-coins {
   display: flex;
   justify-content: center;
-  gap: 18px;
+  gap: 14px;
   min-height: 96px;
   perspective: 900px;
   align-items: flex-end;
 }
 
 .coin-disc {
-  width: 80px;
-  height: 80px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -508,10 +583,21 @@ select {
   --coin-drift: 0px;
   --coin-lift: 48px;
   --coin-spin: 1080deg;
+  isolation: isolate;
 }
 
 .coin-disc::before {
-  content: none;
+  content: "";
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 1px;
+  height: 11px;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(49, 35, 29, 0.22) 0%, rgba(49, 35, 29, 0.08) 48%, rgba(49, 35, 29, 0) 76%);
+  filter: blur(3px);
+  z-index: 0;
+  opacity: 0.72;
 }
 
 .coin-disc::after {
@@ -520,7 +606,7 @@ select {
 
 .coin-face {
   position: absolute;
-  inset: 0;
+  inset: 2px;
   display: block;
   z-index: 1;
   pointer-events: none;
@@ -542,8 +628,8 @@ select {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  filter: saturate(1.02) contrast(1.01);
-  transform: scale(1.08);
+  filter: saturate(1.03) contrast(1.02);
+  transform: scale(1.2);
   transform-origin: center;
 }
 
@@ -885,6 +971,7 @@ select {
 .pillars-table { display: grid; grid-template-columns: 110px repeat(3, minmax(0, 1fr)); gap: 10px; }
 .pillars-table div { padding: 12px; border-radius: 16px; text-align: center; background: rgba(49, 35, 29, 0.05); }
 .pillars-table .table-head { color: var(--muted); font-size: 0.9rem; }
+.full-span-card { grid-column: 1 / -1; }
 .hexagram-card, .hexagram-lines { display: grid; gap: 12px; }
 .hexagram-line { height: 12px; border-radius: 999px; background: rgba(49, 35, 29, 0.12); position: relative; overflow: hidden; }
 .hexagram-line.yang::before, .hexagram-line.yin::before, .hexagram-line.yin::after {
@@ -929,9 +1016,19 @@ select {
     margin-bottom: 16px;
   }
 
+  .experience-switch {
+    width: 100%;
+  }
+
+  .view-toggle {
+    flex: 1 1 0;
+    text-align: center;
+  }
+
   .hero-copy h1 {
-    font-size: clamp(1.45rem, 7vw, 2.1rem);
+    font-size: clamp(1.2rem, 5.4vw, 1.75rem);
     max-width: none;
+    white-space: nowrap;
   }
 
   .hero-text,
@@ -1044,17 +1141,17 @@ select {
   }
 
   .coin-stage {
-    padding: 14px;
+    padding: 10px 8px 6px;
   }
 
   .coin-stage-coins {
-    gap: 12px;
+    gap: 10px;
     min-height: 82px;
   }
 
   .coin-disc {
-    width: 70px;
-    height: 70px;
+    width: 66px;
+    height: 66px;
   }
 
   .line-options {

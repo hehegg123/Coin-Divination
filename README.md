@@ -1,4 +1,4 @@
-# Coin Divination
+# Hexagram Divination
 
 一个无需安装依赖的本地网页原型，包含：
 

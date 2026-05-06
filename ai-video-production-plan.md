@@ -188,7 +188,7 @@ Explain the system simply and make users trust the method.
 
 `If you’re new here, here’s what this reading actually is.`
 
-`Coin Divination is a traditional method of asking for guidance through a six-line coin cast. It helps reveal the energy around your question right now.`
+`Coin Divination is a traditional method of asking for guidance through casting three coin six times. It helps reveal the energy around your question right now.`
 
 `Bazi, also called the Four Pillars of Destiny, is a birth chart system based on your date and time of birth. It shows the deeper pattern behind your personality, timing, strengths, and life tendencies.`
 
@@ -196,7 +196,7 @@ Explain the system simply and make users trust the method.
 
 `So instead of a generic horoscope, you get a reading that connects your chart with today’s timing.`
 
-`On this site, you’ll see a quick reading first, then a deeper breakdown if you want more detail.`
+`On this site, you can see a quick reading first, then a deeper breakdown if you want more detail.`
 
 `If you want to try your own reading, start in the link on the page.`
 

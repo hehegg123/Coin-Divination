@@ -1,4 +1,4 @@
-# Deploy Coin Divination to GitHub Pages
+# Deploy Hexagram Divination to GitHub Pages
 
 This project is already structured as a static site, so GitHub Pages can publish it directly from the repository root.
 

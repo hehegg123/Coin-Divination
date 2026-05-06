@@ -115,6 +115,93 @@ const TRIGRAMS = {
   "110": { key: "dui", name: "兑", title: "泽悦人", element: "metal", reading: "利社交与反馈，也提醒注意口舌是非。" },
 };
 
+const BRANCH_LABELS = {
+  zi: "子",
+  chou: "丑",
+  yin: "寅",
+  mao: "卯",
+  chen: "辰",
+  si: "巳",
+  wu: "午",
+  wei: "未",
+  shen: "申",
+  you: "酉",
+  xu: "戌",
+  hai: "亥",
+};
+
+const STEM_LABELS = {
+  jia: "甲",
+  yi: "乙",
+  bing: "丙",
+  ding: "丁",
+  wu: "戊",
+  ji: "己",
+  geng: "庚",
+  xin: "辛",
+  ren: "壬",
+  gui: "癸",
+};
+
+const EIGHT_PALACE_STAGES = [
+  { key: "ben", nameZh: "本宫卦", nameEn: "Palace head", shi: 6, ying: 3 },
+  { key: "yiShi", nameZh: "一世卦", nameEn: "First generation", shi: 1, ying: 4 },
+  { key: "erShi", nameZh: "二世卦", nameEn: "Second generation", shi: 2, ying: 5 },
+  { key: "sanShi", nameZh: "三世卦", nameEn: "Third generation", shi: 3, ying: 6 },
+  { key: "siShi", nameZh: "四世卦", nameEn: "Fourth generation", shi: 4, ying: 1 },
+  { key: "wuShi", nameZh: "五世卦", nameEn: "Fifth generation", shi: 5, ying: 2 },
+  { key: "youHun", nameZh: "游魂卦", nameEn: "Wandering soul", shi: 4, ying: 1 },
+  { key: "guiHun", nameZh: "归魂卦", nameEn: "Returning soul", shi: 3, ying: 6 },
+];
+
+const EIGHT_PALACE_ORDER = {
+  qian: [["qian", "qian"], ["xun", "qian"], ["gen", "qian"], ["kun", "qian"], ["kun", "xun"], ["kun", "gen"], ["kun", "li"], ["qian", "li"]],
+  dui: [["dui", "dui"], ["kan", "dui"], ["kun", "dui"], ["gen", "dui"], ["gen", "kan"], ["gen", "kun"], ["gen", "zhen"], ["dui", "zhen"]],
+  li: [["li", "li"], ["gen", "li"], ["xun", "li"], ["kan", "li"], ["kan", "gen"], ["kan", "xun"], ["kan", "qian"], ["li", "qian"]],
+  zhen: [["zhen", "zhen"], ["kun", "zhen"], ["kan", "zhen"], ["xun", "zhen"], ["xun", "kun"], ["xun", "kan"], ["xun", "dui"], ["zhen", "dui"]],
+  xun: [["xun", "xun"], ["qian", "xun"], ["li", "xun"], ["zhen", "xun"], ["zhen", "qian"], ["zhen", "li"], ["zhen", "gen"], ["xun", "gen"]],
+  kan: [["kan", "kan"], ["dui", "kan"], ["zhen", "kan"], ["li", "kan"], ["li", "dui"], ["li", "zhen"], ["li", "kun"], ["kan", "kun"]],
+  gen: [["gen", "gen"], ["li", "gen"], ["qian", "gen"], ["dui", "gen"], ["dui", "li"], ["dui", "qian"], ["dui", "xun"], ["gen", "xun"]],
+  kun: [["kun", "kun"], ["zhen", "kun"], ["dui", "kun"], ["qian", "kun"], ["qian", "zhen"], ["qian", "dui"], ["qian", "kan"], ["kun", "kan"]],
+};
+
+const EIGHT_PALACE_LOOKUP = Object.fromEntries(
+  Object.entries(EIGHT_PALACE_ORDER).flatMap(([palaceKey, combos]) =>
+    combos.map(([lowerKey, upperKey], index) => [
+      `${lowerKey}-${upperKey}`,
+      { palaceKey, palaceStage: EIGHT_PALACE_STAGES[index] },
+    ]),
+  ),
+);
+
+const NAJIA_TRIGRAMS = {
+  qian: { innerStem: "jia", outerStem: "ren", innerBranches: ["zi", "yin", "chen"], outerBranches: ["wu", "shen", "xu"] },
+  kun: { innerStem: "yi", outerStem: "gui", innerBranches: ["wei", "si", "mao"], outerBranches: ["chou", "hai", "you"] },
+  zhen: { innerStem: "geng", outerStem: "geng", innerBranches: ["zi", "yin", "chen"], outerBranches: ["wu", "shen", "xu"] },
+  xun: { innerStem: "xin", outerStem: "xin", innerBranches: ["chou", "hai", "you"], outerBranches: ["wei", "si", "mao"] },
+  kan: { innerStem: "wu", outerStem: "wu", innerBranches: ["yin", "chen", "wu"], outerBranches: ["shen", "xu", "zi"] },
+  li: { innerStem: "ji", outerStem: "ji", innerBranches: ["mao", "chou", "hai"], outerBranches: ["you", "wei", "si"] },
+  gen: { innerStem: "bing", outerStem: "bing", innerBranches: ["chen", "wu", "shen"], outerBranches: ["xu", "zi", "yin"] },
+  dui: { innerStem: "ding", outerStem: "ding", innerBranches: ["si", "mao", "chou"], outerBranches: ["hai", "you", "wei"] },
+};
+
+const SIX_RELATIVE_LABELS = {
+  sibling: { zh: "兄弟", en: "Sibling" },
+  child: { zh: "子孙", en: "Child" },
+  wealth: { zh: "妻财", en: "Wealth" },
+  authority: { zh: "官鬼", en: "Officer" },
+  parent: { zh: "父母", en: "Parent" },
+};
+
+const HEXAGRAM_USEFUL_RELATION_BY_FOCUS = {
+  self: "self",
+  wealth: "wealth",
+  authority: "authority",
+  parent: "parent",
+  child: "child",
+  sibling: "sibling",
+};
+
 const COIN_OPTIONS = [
   { value: 6, label: "3反 0正", nature: "老阴", symbol: "阴变" },
   { value: 7, label: "1正 2反", nature: "少阳", symbol: "阳" },
@@ -501,6 +588,89 @@ function getTrigram(lines) {
   return TRIGRAMS[lines.map((line) => (line === 7 || line === 9 ? 1 : 0)).join("")];
 }
 
+function branchByKey(key) {
+  return BRANCHES.find((branch) => branch.key === key);
+}
+
+function stemByKeySafe(key) {
+  return STEMS.find((stem) => stem.key === key);
+}
+
+function branchLabelByKey(key) {
+  return BRANCH_LABELS[key] || key;
+}
+
+function stemLabelByKey(key) {
+  return STEM_LABELS[key] || key;
+}
+
+function sixRelativeKeyForElement(selfElement, lineElement) {
+  if (!selfElement || !lineElement) return "sibling";
+  if (selfElement === lineElement) return "sibling";
+  if (ELEMENT_SUPPORT[selfElement] === lineElement) return "parent";
+  if (ELEMENT_OUTPUT[selfElement] === lineElement) return "child";
+  if (ELEMENT_CONTROL[selfElement] === lineElement) return "wealth";
+  if (controllerElement(selfElement) === lineElement) return "authority";
+  return "sibling";
+}
+
+function sixRelativeLabels(key) {
+  return SIX_RELATIVE_LABELS[key] || SIX_RELATIVE_LABELS.sibling;
+}
+
+function najiaLinesForHexagram(lowerKey, upperKey, lines, linePolarity) {
+  const lowerNajia = NAJIA_TRIGRAMS[lowerKey];
+  const upperNajia = NAJIA_TRIGRAMS[upperKey];
+  if (!lowerNajia || !upperNajia) return [];
+
+  return [
+    ...lowerNajia.innerBranches.map((branchKey, index) => {
+      const branch = branchByKey(branchKey);
+      const stem = stemByKeySafe(lowerNajia.innerStem);
+      return {
+        position: index + 1,
+        stemKey: lowerNajia.innerStem,
+        stemLabel: stemLabelByKey(lowerNajia.innerStem),
+        stem,
+        branchKey,
+        branchLabel: branchLabelByKey(branchKey),
+        branch,
+        element: branch?.element || null,
+        lineValue: lines[index],
+        polarity: linePolarity[index],
+      };
+    }),
+    ...upperNajia.outerBranches.map((branchKey, index) => {
+      const branch = branchByKey(branchKey);
+      const stem = stemByKeySafe(upperNajia.outerStem);
+      const position = index + 4;
+      return {
+        position,
+        stemKey: upperNajia.outerStem,
+        stemLabel: stemLabelByKey(upperNajia.outerStem),
+        stem,
+        branchKey,
+        branchLabel: branchLabelByKey(branchKey),
+        branch,
+        element: branch?.element || null,
+        lineValue: lines[position - 1],
+        polarity: linePolarity[position - 1],
+      };
+    }),
+  ];
+}
+
+function palaceMetaForHexagram(lowerKey, upperKey) {
+  const lookup = EIGHT_PALACE_LOOKUP[`${lowerKey}-${upperKey}`];
+  if (!lookup) return null;
+  return {
+    ...lookup,
+    palaceTrigram: TRIGRAMS[
+      Object.entries(TRIGRAMS).find(([, trigram]) => trigram.key === lookup.palaceKey)?.[0] || "111"
+    ],
+  };
+}
+
 function buildHexagram(lines) {
   const lower = getTrigram(lines.slice(0, 3));
   const upper = getTrigram(lines.slice(3, 6));
@@ -519,6 +689,24 @@ function buildHexagram(lines) {
     .map((line) => line.position);
   const linePolarity = lines.map((value) => (value === 7 || value === 9 ? "yang" : "yin"));
   const changedLinePolarity = changedLines.map((value) => (value === 7 || value === 9 ? "yang" : "yin"));
+  const palaceMeta = palaceMetaForHexagram(lower.key, upper.key);
+  const baseLineMeta = najiaLinesForHexagram(lower.key, upper.key, lines, linePolarity);
+  const palaceElement = palaceMeta?.palaceTrigram?.element || lower.element;
+  const lineMeta = baseLineMeta.map((line) => {
+    const relativeKey = sixRelativeKeyForElement(palaceElement, line.element);
+    const relativeLabels = sixRelativeLabels(relativeKey);
+    return {
+      ...line,
+      relativeKey,
+      relativeZh: relativeLabels.zh,
+      relativeEn: relativeLabels.en,
+      isMoving: movingLines.includes(line.position),
+    };
+  });
+  const shiPosition = palaceMeta?.palaceStage?.shi || null;
+  const yingPosition = palaceMeta?.palaceStage?.ying || null;
+  const shiLine = lineMeta.find((line) => line.position === shiPosition) || null;
+  const yingLine = lineMeta.find((line) => line.position === yingPosition) || null;
   const lineScore = lines.reduce((score, value) => {
     if (value === 9) return score + 6;
     if (value === 7) return score + 4;
@@ -556,6 +744,18 @@ function buildHexagram(lines) {
     changedJudgmentEn: changedRule?.judgmentEn || "",
     changedActionZh: changedRule?.actionZh || "",
     changedActionEn: changedRule?.actionEn || "",
+    palaceKey: palaceMeta?.palaceKey || null,
+    palaceNameZh: palaceMeta?.palaceTrigram?.name || "",
+    palaceNameEn: palaceMeta?.palaceTrigram?.key || "",
+    palaceElement,
+    palaceStageKey: palaceMeta?.palaceStage?.key || "",
+    palaceStageZh: palaceMeta?.palaceStage?.nameZh || "",
+    palaceStageEn: palaceMeta?.palaceStage?.nameEn || "",
+    shiPosition,
+    yingPosition,
+    shiLine,
+    yingLine,
+    lineMeta,
     rule,
     changedRule,
     score: lineScore - movingLines.length * 2,
@@ -2024,6 +2224,483 @@ function getTransitPillars(dateString, timeZone) {
   };
 }
 
+function branchTimeEffect(lineBranchKey, timeBranchKey, scope = "month") {
+  const lineBranch = branchByKey(lineBranchKey);
+  const timeBranch = branchByKey(timeBranchKey);
+  if (!lineBranch || !timeBranch) {
+    return {
+      score: 0,
+      labelZh: scope === "month" ? "月建未明" : "日辰未明",
+      labelEn: scope === "month" ? "Month command unclear" : "Day branch unclear",
+      detailZh: "暂时无法判断。",
+      detailEn: "The relation cannot be judged yet.",
+      mood: "neutral",
+    };
+  }
+
+  const sameScopeZh = scope === "month" ? "月建" : "日辰";
+  const sameScopeEn = scope === "month" ? "month command" : "day branch";
+  const heavy = scope === "month" ? 1 : 0;
+
+  if (lineBranchKey === timeBranchKey) {
+    return {
+      score: scope === "month" ? 5 : 4,
+      labelZh: scope === "month" ? "得月建" : "得日辰",
+      labelEn: scope === "month" ? "Supported by the month command" : "Supported by the day branch",
+      detailZh: `${sameScopeZh}与世爻同支，卦主之气容易站得住。`,
+      detailEn: `The ${sameScopeEn} matches the Self line branch, so the querent's footing is easier to hold.`,
+      mood: "support",
+    };
+  }
+
+  if (BRANCH_CLASH[lineBranchKey] === timeBranchKey) {
+    return {
+      score: scope === "month" ? -6 : -4,
+      labelZh: scope === "month" ? "月破" : "日冲",
+      labelEn: scope === "month" ? "Broken by the month" : "Clashed by the day",
+      detailZh: `${sameScopeZh}与世爻相冲，卦主当下容易被局面推着走。`,
+      detailEn: `The ${sameScopeEn} clashes the Self line, so the querent is more easily pushed by circumstances.`,
+      mood: "clash",
+    };
+  }
+
+  if (BRANCH_COMBINES[lineBranchKey] === timeBranchKey) {
+    return {
+      score: scope === "month" ? 2 : 1,
+      labelZh: `${sameScopeZh}相合`,
+      labelEn: `${scope === "month" ? "Month" : "Day"} combines with the Self line`,
+      detailZh: `${sameScopeZh}与世爻有合，说明局面会牵动你，也会把你拉进关系之中。`,
+      detailEn: `The ${sameScopeEn} combines with the Self line, so the matter draws you into entanglement and response.`,
+      mood: "combine",
+    };
+  }
+
+  if (BRANCH_HARM[lineBranchKey] === timeBranchKey) {
+    return {
+      score: scope === "month" ? -2 : -1,
+      labelZh: `${sameScopeZh}相害`,
+      labelEn: `${scope === "month" ? "Month" : "Day"} harms the Self line`,
+      detailZh: `${sameScopeZh}对世爻有暗损之象，表面未必激烈，心里却容易别扭。`,
+      detailEn: `The ${sameScopeEn} harms the Self line, so the strain may stay subtle while still unsettling the querent.`,
+      mood: "harm",
+    };
+  }
+
+  if ((BRANCH_PUNISH[lineBranchKey] || []).includes(timeBranchKey)) {
+    return {
+      score: scope === "month" ? -2 : -1,
+      labelZh: `${sameScopeZh}相刑`,
+      labelEn: `${scope === "month" ? "Month" : "Day"} punishes the Self line`,
+      detailZh: `${sameScopeZh}与世爻相刑，事情容易拧着来，心里会觉得卡。`,
+      detailEn: `The ${sameScopeEn} punishes the Self line, so the matter tends to tighten and chafe rather than flow.`,
+      mood: "punish",
+    };
+  }
+
+  if (lineBranch.element === timeBranch.element) {
+    return {
+      score: scope === "month" ? 3 : 2,
+      labelZh: `${sameScopeZh}同气`,
+      labelEn: `${scope === "month" ? "Month" : "Day"} shares the same element`,
+      detailZh: `${sameScopeZh}与世爻五行同气，卦主仍有自己的力道。`,
+      detailEn: `The ${sameScopeEn} shares the Self line's element, so the querent still keeps some strength.`,
+      mood: "support",
+    };
+  }
+
+  if (ELEMENT_SUPPORT[lineBranch.element] === timeBranch.element) {
+    return {
+      score: scope === "month" ? 3 : 2,
+      labelZh: `${sameScopeZh}生世`,
+      labelEn: `${scope === "month" ? "Month" : "Day"} generates the Self line`,
+      detailZh: `${sameScopeZh}生扶世爻，说明外在时气对你有助。`,
+      detailEn: `The ${sameScopeEn} generates the Self line, so outer timing is helping the querent.`,
+      mood: "support",
+    };
+  }
+
+  if (ELEMENT_CONTROL[timeBranch.element] === lineBranch.element) {
+    return {
+      score: scope === "month" ? -3 : -2,
+      labelZh: `${sameScopeZh}克世`,
+      labelEn: `${scope === "month" ? "Month" : "Day"} controls the Self line`,
+      detailZh: `${sameScopeZh}压着世爻，说明你当下容易受环境牵制。`,
+      detailEn: `The ${sameScopeEn} controls the Self line, so the querent is more constrained by the situation.`,
+      mood: "pressure",
+    };
+  }
+
+  if (ELEMENT_OUTPUT[lineBranch.element] === timeBranch.element) {
+    return {
+      score: scope === "month" ? -1 - heavy : -1,
+      labelZh: `${sameScopeZh}泄世`,
+      labelEn: `${scope === "month" ? "Month" : "Day"} drains the Self line`,
+      detailZh: `${sameScopeZh}让世爻之气外泄，说明你会有分神、分力的感觉。`,
+      detailEn: `The ${sameScopeEn} drains the Self line, so the querent's energy is being pulled outward.`,
+      mood: "drain",
+    };
+  }
+
+  if (ELEMENT_CONTROL[lineBranch.element] === timeBranch.element) {
+    return {
+      score: scope === "month" ? -1 : 0,
+      labelZh: `${sameScopeZh}耗世`,
+      labelEn: `${scope === "month" ? "Month" : "Day"} taxes the Self line`,
+      detailZh: `${sameScopeZh}不至于压垮世爻，但会让你更费力。`,
+      detailEn: `The ${sameScopeEn} does not crush the Self line, but it does make the querent work harder.`,
+      mood: "taxing",
+    };
+  }
+
+  return {
+    score: 0,
+    labelZh: `${sameScopeZh}平平`,
+    labelEn: `${scope === "month" ? "Month" : "Day"} neutral`,
+    detailZh: `${sameScopeZh}对世爻没有明显推拉，更多还是看你自己怎么应。`,
+    detailEn: `The ${sameScopeEn} does not push or drag the Self line strongly, so more depends on how the querent responds.`,
+    mood: "neutral",
+  };
+}
+
+function shiLineState(score, monthEffect, dayEffect) {
+  if (monthEffect.mood === "clash" && dayEffect.mood === "clash") {
+    return {
+      tierZh: "世爻受冲",
+      tierEn: "The Self line is under direct clash",
+      omenZh: "偏凶",
+      omenEn: "leaning unfavorable",
+      summaryZh: "我先看世爻。月建与日辰都来冲它，这说明卦主眼下脚跟不稳，事情多半不是你想推就能推得动。",
+      summaryEn: "I read the Self line first. Both the month and day clash it, which says the querent's footing is unstable and the matter is not moved simply by personal will.",
+    };
+  }
+
+  if (score >= 7) {
+    return {
+      tierZh: "世爻得气",
+      tierEn: "The Self line is well supported",
+      omenZh: "偏吉",
+      omenEn: "leaning favorable",
+      summaryZh: "我先看世爻。它得月日之助，说明卦主此时心里有底、手上也还有力，事情多半能按你的意思去推动。",
+      summaryEn: "I read the Self line first. It is helped by the month and day, so the querent still has both inner confidence and workable leverage.",
+    };
+  }
+
+  if (score >= 2) {
+    return {
+      tierZh: "世爻有根",
+      tierEn: "The Self line still has footing",
+      omenZh: "中平偏稳",
+      omenEn: "steady to mildly favorable",
+      summaryZh: "我先看世爻。它虽不是大旺，但仍站得住，说明卦主还有回旋空间，宜稳着走，不宜乱改主意。",
+      summaryEn: "I read the Self line first. It is not overflowing with strength, but it still has ground beneath it, so the querent keeps room to maneuver if they move steadily.",
+    };
+  }
+
+  if (score <= -6) {
+    return {
+      tierZh: "世爻受制",
+      tierEn: "The Self line is heavily constrained",
+      omenZh: "偏凶",
+      omenEn: "leaning unfavorable",
+      summaryZh: "我先看世爻。它被月日压住，说明卦主眼下气短势弱，这件事更像先受局势摆布，不宜硬顶。",
+      summaryEn: "I read the Self line first. It is pressed down by the month and day, so the querent is short on leverage and should not force the field head-on.",
+    };
+  }
+
+  return {
+    tierZh: "世爻未定",
+    tierEn: "The Self line is unsettled",
+    omenZh: "中平",
+    omenEn: "mixed",
+    summaryZh: "我先看世爻。它不算全弱，也不算全旺，说明卦主心里有想法，但局面还在摇，要边看边走。",
+    summaryEn: "I read the Self line first. It is neither fully weak nor fully strong, so the querent has intent, but the field is still shifting and must be read as it moves.",
+  };
+}
+
+function analyzeHexagramSelfLine(hexagram, dateString, timeZone) {
+  const transit = getTransitPillars(dateString, timeZone);
+  const shiLine = hexagram.shiLine;
+  const yingLine = hexagram.yingLine;
+
+  if (!shiLine) {
+    return {
+      transit,
+      monthEffect: null,
+      dayEffect: null,
+      status: {
+        tierZh: "世爻未定",
+        tierEn: "Self line unavailable",
+        omenZh: "待定",
+        omenEn: "pending",
+        summaryZh: "这一步还缺少世爻底表，暂时无法判断卦主状态。",
+        summaryEn: "The Self line table is missing here, so the querent's state cannot be judged yet.",
+      },
+    };
+  }
+
+  const monthEffect = branchTimeEffect(shiLine.branchKey, transit.monthPillar.branch.key, "month");
+  const dayEffect = branchTimeEffect(shiLine.branchKey, transit.dayPillar.branch.key, "day");
+  const totalScore = monthEffect.score + dayEffect.score;
+  const status = shiLineState(totalScore, monthEffect, dayEffect);
+
+  return {
+    transit,
+    shiLine,
+    yingLine,
+    monthEffect,
+    dayEffect,
+    totalScore,
+    status,
+  };
+}
+
+function analyzeHexagramLineTiming(line, transit) {
+  if (!line) {
+    return {
+      monthEffect: null,
+      dayEffect: null,
+      totalScore: 0,
+      tierZh: "未定",
+      tierEn: "unclear",
+    };
+  }
+
+  const monthEffect = branchTimeEffect(line.branchKey, transit.monthPillar.branch.key, "month");
+  const dayEffect = branchTimeEffect(line.branchKey, transit.dayPillar.branch.key, "day");
+  const totalScore = monthEffect.score + dayEffect.score;
+
+  let tierZh = "平";
+  let tierEn = "steady";
+  if (totalScore >= 7) {
+    tierZh = "得气";
+    tierEn = "well supported";
+  } else if (totalScore >= 2) {
+    tierZh = "有根";
+    tierEn = "has footing";
+  } else if (totalScore <= -6) {
+    tierZh = "受制";
+    tierEn = "pressed";
+  } else if (totalScore < 0) {
+    tierZh = "偏弱";
+    tierEn = "somewhat weak";
+  }
+
+  return {
+    monthEffect,
+    dayEffect,
+    totalScore,
+    tierZh,
+    tierEn,
+  };
+}
+
+function linePairRelation(actorLine, targetLine, actorLabelZh, targetLabelZh, actorLabelEn, targetLabelEn) {
+  if (!actorLine || !targetLine) {
+    return {
+      key: "neutral",
+      labelZh: `${actorLabelZh}与${targetLabelZh}暂未明`,
+      labelEn: `${actorLabelEn} and ${targetLabelEn} are not clear yet`,
+      detailZh: "这一层关系暂时还看不清。",
+      detailEn: "This layer cannot be judged clearly yet.",
+    };
+  }
+
+  let key = "neutral";
+  let labelZh = `${actorLabelZh}与${targetLabelZh}无明显生克`;
+  let labelEn = `${actorLabelEn} and ${targetLabelEn} show no strong element push`;
+  let detailZh = "两边现在没有明显谁来推谁。";
+  let detailEn = "Neither side is strongly pushing the other by element.";
+
+  if (actorLine.element === targetLine.element) {
+    key = "same";
+    labelZh = `${actorLabelZh}与${targetLabelZh}同气`;
+    labelEn = `${actorLabelEn} and ${targetLabelEn} share the same qi`;
+    detailZh = "两边气机相近，容易互相牵动，也容易彼此照见。";
+    detailEn = "They run on similar qi, so they easily resonate and affect one another.";
+  } else if (ELEMENT_SUPPORT[targetLine.element] === actorLine.element) {
+    key = "actorGeneratesTarget";
+    labelZh = `${actorLabelZh}生${targetLabelZh}`;
+    labelEn = `${actorLabelEn} generates ${targetLabelEn}`;
+    detailZh = `${actorLabelZh}在往${targetLabelZh}那边送气，说明你这边更像在扶、在喂、在主动投入。`;
+    detailEn = `${actorLabelEn} feeds ${targetLabelEn}, so this side is supplying energy and making the investment.`;
+  } else if (ELEMENT_SUPPORT[actorLine.element] === targetLine.element) {
+    key = "targetGeneratesActor";
+    labelZh = `${targetLabelZh}生${actorLabelZh}`;
+    labelEn = `${targetLabelEn} generates ${actorLabelEn}`;
+    detailZh = `${targetLabelZh}反过来生扶${actorLabelZh}，说明这边能给你回气、回手、回旋空间。`;
+    detailEn = `${targetLabelEn} feeds ${actorLabelEn}, so this side returns support and room to work with.`;
+  } else if (ELEMENT_CONTROL[actorLine.element] === targetLine.element) {
+    key = "actorControlsTarget";
+    labelZh = `${actorLabelZh}克${targetLabelZh}`;
+    labelEn = `${actorLabelEn} controls ${targetLabelEn}`;
+    detailZh = `${actorLabelZh}能压住${targetLabelZh}，说明主动权较多还在你这边。`;
+    detailEn = `${actorLabelEn} controls ${targetLabelEn}, which means leverage leans more to your side.`;
+  } else if (ELEMENT_CONTROL[targetLine.element] === actorLine.element) {
+    key = "targetControlsActor";
+    labelZh = `${targetLabelZh}克${actorLabelZh}`;
+    labelEn = `${targetLabelEn} controls ${actorLabelEn}`;
+    detailZh = `${targetLabelZh}反过来压住${actorLabelZh}，说明这件事或对方会给你压力。`;
+    detailEn = `${targetLabelEn} controls ${actorLabelEn}, so the matter or the other side is pressing on you.`;
+  }
+
+  let branchNoteZh = "";
+  let branchNoteEn = "";
+  if (BRANCH_CLASH[actorLine.branchKey] === targetLine.branchKey) {
+    branchNoteZh = " 两爻地支又相冲，事情不容易按原计划站稳。";
+    branchNoteEn = " Their branches also clash, so the matter is harder to hold on its original track.";
+  } else if (BRANCH_COMBINES[actorLine.branchKey] === targetLine.branchKey) {
+    branchNoteZh = " 两爻地支相合，说明关系会越缠越深。";
+    branchNoteEn = " Their branches combine, so the entanglement between the two grows deeper.";
+  }
+
+  return {
+    key,
+    labelZh,
+    labelEn,
+    detailZh: `${detailZh}${branchNoteZh}`.trim(),
+    detailEn: `${detailEn}${branchNoteEn}`.trim(),
+  };
+}
+
+function usefulLineStatus(score, usefulRelationZh, usefulRelationEn, relationToShiKey, usefulLine) {
+  const movingBonus = usefulLine?.isMoving ? 1 : 0;
+  const landingBonus = usefulLine?.position === usefulLine?.yingPosition ? 0 : 0;
+  const adjusted = score + movingBonus + landingBonus;
+
+  if (adjusted >= 8 || relationToShiKey === "targetGeneratesActor" || relationToShiKey === "actorControlsTarget") {
+    return {
+      tierZh: "用神得力",
+      tierEn: "The useful line has real force",
+      omenZh: "偏吉",
+      omenEn: "leaning favorable",
+      summaryZh: `${usefulRelationZh}在卦里站得住，这件事不是空想，眼下确实有可抓的门路。`,
+      summaryEn: `The useful line for ${usefulRelationEn} stands with force, so this matter has real purchase and is not only wishful thinking.`,
+    };
+  }
+
+  if (adjusted >= 2) {
+    return {
+      tierZh: "用神可用",
+      tierEn: "The useful line is workable",
+      omenZh: "中平偏稳",
+      omenEn: "steady to mildly favorable",
+      summaryZh: `${usefulRelationZh}虽不算大旺，但还可以用，说明事情有路，只是节奏要拿稳。`,
+      summaryEn: `The useful line for ${usefulRelationEn} is not overwhelmingly strong, but it is usable, so the matter has a path if you hold the pace properly.`,
+    };
+  }
+
+  if (adjusted <= -5 || relationToShiKey === "targetControlsActor") {
+    return {
+      tierZh: "用神受制",
+      tierEn: "The useful line is constrained",
+      omenZh: "偏凶",
+      omenEn: "leaning unfavorable",
+      summaryZh: `${usefulRelationZh}眼下受压，这件事多半还不在你手里，急推只会更费力。`,
+      summaryEn: `The useful line for ${usefulRelationEn} is under pressure, so the matter is not truly in your hands yet and forcing it will cost more.`,
+    };
+  }
+
+  return {
+    tierZh: "用神未定",
+    tierEn: "The useful line is unsettled",
+    omenZh: "中平",
+    omenEn: "mixed",
+    summaryZh: `${usefulRelationZh}不是全无机会，但还在摇摆，先看清谁在起作用，再决定要不要动。`,
+    summaryEn: `The useful line for ${usefulRelationEn} is not without possibility, but it is still unsettled and should be read before being pushed.`,
+  };
+}
+
+function analyzeHexagramUsefulLine(hexagram, focus, dateString, timeZone) {
+  const transit = getTransitPillars(dateString, timeZone);
+  const usefulRelationKey = HEXAGRAM_USEFUL_RELATION_BY_FOCUS[focus] || "self";
+  const usefulRelationLabels = usefulRelationKey === "self"
+    ? { zh: "世爻", en: "the Self line" }
+    : sixRelativeLabels(usefulRelationKey);
+  const shiLine = hexagram.shiLine;
+  const yingLine = hexagram.yingLine;
+
+  if (usefulRelationKey === "self") {
+    const selfTiming = analyzeHexagramLineTiming(shiLine, transit);
+    const shiYing = linePairRelation(shiLine, yingLine, "世爻", "应爻", "Self line", "Response line");
+    return {
+      transit,
+      usefulRelationKey,
+      usefulRelationZh: usefulRelationLabels.zh,
+      usefulRelationEn: usefulRelationLabels.en,
+      usefulLines: shiLine ? [{
+        ...shiLine,
+        timing: selfTiming,
+        isShi: true,
+        isYing: shiLine.position === hexagram.yingPosition,
+      }] : [],
+      usefulLine: shiLine ? {
+        ...shiLine,
+        timing: selfTiming,
+        isShi: true,
+        isYing: shiLine.position === hexagram.yingPosition,
+      } : null,
+      shiYing,
+      usefulToShi: {
+        key: "same",
+        labelZh: "用神即世爻",
+        labelEn: "The useful line is the Self line",
+        detailZh: "这次若问自身处境，就直接以世爻为主，不必另外再找别的用神。",
+        detailEn: "For a personal-situation question, the Self line itself becomes the useful line.",
+      },
+      usefulToYing: yingLine
+        ? linePairRelation(shiLine, yingLine, "世爻", "应爻", "Self line", "Response line")
+        : null,
+      status: usefulLineStatus(selfTiming.totalScore, usefulRelationLabels.zh, usefulRelationLabels.en, "same", shiLine),
+    };
+  }
+
+  const usefulCandidates = hexagram.lineMeta
+    .filter((line) => line.relativeKey === usefulRelationKey)
+    .map((line) => {
+      const timing = analyzeHexagramLineTiming(line, transit);
+      return {
+        ...line,
+        timing,
+        isShi: line.position === hexagram.shiPosition,
+        isYing: line.position === hexagram.yingPosition,
+        pickScore: timing.totalScore + (line.isMoving ? 1.2 : 0) + (line.position === hexagram.yingPosition ? 0.8 : 0) + (line.position === hexagram.shiPosition ? 0.4 : 0),
+      };
+    })
+    .sort((left, right) => right.pickScore - left.pickScore || left.position - right.position);
+
+  const usefulLine = usefulCandidates[0] || null;
+  const usefulToShi = usefulLine
+    ? linePairRelation(usefulLine, shiLine, usefulRelationLabels.zh, "世爻", usefulRelationLabels.en, "Self line")
+    : null;
+  const usefulToYing = usefulLine && yingLine
+    ? linePairRelation(usefulLine, yingLine, usefulRelationLabels.zh, "应爻", usefulRelationLabels.en, "Response line")
+    : null;
+  const shiYing = linePairRelation(shiLine, yingLine, "世爻", "应爻", "Self line", "Response line");
+  const status = usefulLine
+    ? usefulLineStatus(usefulLine.timing.totalScore, usefulRelationLabels.zh, usefulRelationLabels.en, usefulToShi?.key, usefulLine)
+    : {
+      tierZh: "用神未见",
+      tierEn: "Useful line not found",
+      omenZh: "待定",
+      omenEn: "pending",
+      summaryZh: `${usefulRelationLabels.zh}这一步还没有稳定落点，暂时不宜把结论说死。`,
+      summaryEn: `The useful line for ${usefulRelationLabels.en} does not land cleanly yet, so the matter should not be concluded too early.`,
+    };
+
+  return {
+    transit,
+    usefulRelationKey,
+    usefulRelationZh: usefulRelationLabels.zh,
+    usefulRelationEn: usefulRelationLabels.en,
+    usefulLines: usefulCandidates,
+    usefulLine,
+    shiYing,
+    usefulToShi,
+    usefulToYing,
+    status,
+  };
+}
+
 const RECTIFICATION_HOURS = [
   { key: "zi", time: "00:30", range: "23:00-00:59", labelZh: "子时", labelEn: "Zi Hour" },
   { key: "chou", time: "02:00", range: "01:00-02:59", labelZh: "丑时", labelEn: "Chou Hour" },
@@ -2216,4 +2893,4 @@ function rectifyBirthTime(payload) {
   };
 }
 
-export { COIN_OPTIONS, ELEMENT_LABELS, buildFortune, formatLocalDate, getTransitPillars, rectifyBirthTime };
+export { COIN_OPTIONS, ELEMENT_LABELS, analyzeHexagramSelfLine, analyzeHexagramUsefulLine, buildFortune, buildHexagram, formatLocalDate, getTransitPillars, rectifyBirthTime };
